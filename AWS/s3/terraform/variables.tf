@@ -2,7 +2,11 @@
 variable "v1fs_apikey" {
   description = "The Vision One API key for the scanner"
   type        = string
-  default     = ""
+  sensitive   = true
+  validation {
+    condition     = length(var.v1fs_apikey) > 0
+    error_message = "The v1fs_apikey variable must be set and cannot be empty."
+  }
 }
 
 variable "v1fs_region" {
@@ -44,9 +48,14 @@ variable "sdk_tags" {
   default     = ["env:prod","project:new_app","cost-center:dev"]
 }
 
-# Missing implementation
 variable "enable_tag" {
-  description = "In case you want to tag the objects scanned by the scanner"
+  description = "Enable S3 object tagging of scanned objects"
   type        = string
   default     = "false"
+}
+
+variable "permissions_boundary_arn" {
+  description = "ARN of the IAM permissions boundary policy to attach to IAM roles (optional)"
+  type        = string
+  default     = null
 }

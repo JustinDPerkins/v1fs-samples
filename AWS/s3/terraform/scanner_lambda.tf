@@ -60,6 +60,7 @@ resource "aws_iam_role" "scanner-role" {
   ]
 }
 EOF
+  permissions_boundary = var.permissions_boundary_arn
   tags = {
     Name = "${var.prefix}-scanner-role-${random_string.random.id}" 
   }

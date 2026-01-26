@@ -1,6 +1,7 @@
 # Create a secret for the API key
 resource "aws_secretsmanager_secret" "apikey" {
-  name = "${var.prefix}-apikey-${random_string.random.id}"
+  name        = "${var.prefix}-apikey-${random_string.random.id}"
+  description = "Vision One API Key for V1FS Scanner"
   tags = {
     Name = "${var.prefix}-apikey-${random_string.random.id}"
   }

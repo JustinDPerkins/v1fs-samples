@@ -1,4 +1,4 @@
-# V1FS SDK for S3 CloudFormation Deployment
+# V1FS SDK for S3 - CloudFormation Deployment
 
 This example demonstrates how to use the [V1FS Python SDK](https://github.com/trendmicro/tm-v1-fs-python-sdk) to automatically scan files uploaded to an S3 bucket using AWS CloudFormation.
 
@@ -8,7 +8,6 @@ This example demonstrates how to use the [V1FS Python SDK](https://github.com/tr
 - [Architecture](#architecture)
 - [Requirements](#requirements)
 - [Quick Start](#quick-start)
-- [Manual Deployment](#manual-deployment)
 - [Configuration](#configuration)
 - [S3 Bucket Setup](#s3-bucket-setup)
 - [Multi-Region Deployment](#multi-region-deployment)
@@ -22,10 +21,10 @@ This example demonstrates how to use the [V1FS Python SDK](https://github.com/tr
 
 This CloudFormation template creates an automated file scanning solution that:
 
-- **Automatically scans** files uploaded to S3 buckets using Trend Micro Vision One File Security:SDK
+- **Automatically scans** files uploaded to S3 buckets using Trend Micro Vision One File Security SDK
 - **Publishes scan results** to an SNS topic for integration with email, Slack, or other notification systems
 - **Optionally tags** scanned objects with scan results
-- **Supports** KMS-encrypted buckets, IAM Permission Boundaries and VPC deployments
+- **Supports** KMS-encrypted buckets, IAM Permission Boundaries, and VPC deployments
 
 ## Architecture
 
@@ -68,6 +67,7 @@ This CloudFormation template creates an automated file scanning solution that:
   - SNS topics
   - EventBridge rules
   - Secrets Manager secrets
+- S3 bucket for storing Lambda code packages (must be in the same region as deployment)
 
 ## Quick Start
 
@@ -76,6 +76,7 @@ This CloudFormation template creates an automated file scanning solution that:
 Run the upload script to package and upload Lambda functions:
 
 ```bash
+cd AWS/s3/cloudformation
 ./upload.sh
 ```
 
@@ -134,32 +135,6 @@ aws sns subscribe \
   --protocol email \
   --notification-endpoint your-email@example.com
 ```
-
-## Manual Deployment
-
-If you prefer to handle Lambda code packaging manually:
-
-### 1. Package Lambda Code
-
-```bash
-# Package scanner Lambda
-cd lambda/scanner/src
-zip scanner.zip scanner_lambda.py
-aws s3 cp scanner.zip s3://your-bucket/functions/scanner/lambda.zip
-
-# Package tag Lambda  
-cd ../../tag/src
-zip tag_lambda.zip tag_lambda.py
-aws s3 cp tag_lambda.zip s3://your-bucket/functions/tag/tag_lambda.zip
-
-# Upload Lambda layer
-aws s3 cp ../../scanner/layer/v1fs-python312-arm64.zip \
-  s3://your-bucket/layers/v1fs-python312-arm64.zip
-```
-
-### 2. Deploy Stack
-
-Use the same deployment command as shown in Quick Start.
 
 ## Configuration
 
@@ -270,6 +245,7 @@ aws s3 mb s3://v1fs-lambda-code-us-west-2 --region us-west-2
 
 ```bash
 # Upload to us-east-1 bucket
+cd AWS/s3/cloudformation
 ./upload.sh  # Use bucket: v1fs-lambda-code-us-east-1
 # Then copy to other regions
 aws s3 sync s3://v1fs-lambda-code-us-east-1 s3://v1fs-lambda-code-us-west-2 --source-region us-east-1 --region us-west-2
@@ -476,4 +452,3 @@ If stack deletion fails, you may need to manually delete:
 - [Vision One Documentation](https://docs.trendmicro.com/en-us/cloud-one/cloud-one-file-storage-security)
 - [AWS CloudFormation Documentation](https://docs.aws.amazon.com/cloudformation/)
 - [AWS Lambda Best Practices](https://docs.aws.amazon.com/lambda/latest/dg/best-practices.html)
-
