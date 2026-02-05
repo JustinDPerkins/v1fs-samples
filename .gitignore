@@ -17,7 +17,7 @@
 !**/terraform.tfvars.example
 Azure/
 Azure/*
-GCP/
+
 OCI/
 
 MULTI-CLOUD-ANALYSIS.md
