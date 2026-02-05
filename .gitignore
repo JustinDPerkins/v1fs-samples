@@ -15,9 +15,5 @@
 **/terraform.tfvars
 **/*.tfvars
 !**/terraform.tfvars.example
-Azure/
-Azure/*
 
 OCI/
-
-MULTI-CLOUD-ANALYSIS.md
