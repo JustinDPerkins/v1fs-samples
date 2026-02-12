@@ -28,7 +28,6 @@ resource "aws_lambda_function" "scanner" {
       topic_arn = aws_sns_topic.sns_topic.arn
       secret_name = aws_secretsmanager_secret.apikey.name
       queue_url = aws_sqs_queue.scanner_queue.url
-      sdk_tags = join("~", var.sdk_tags)
     }
   }
   tags = {

@@ -42,12 +42,6 @@ variable "kms_key_bucket" {
   default     = null
 }
 
-variable "sdk_tags" {
-  description = "The tags for the resources"
-  type        = list(string)
-  default     = ["env:prod","project:new_app","cost-center:dev"]
-}
-
 variable "enable_tag" {
   description = "Enable S3 object tagging of scanned objects"
   type        = string
@@ -56,6 +50,12 @@ variable "enable_tag" {
 
 variable "permissions_boundary_arn" {
   description = "ARN of the IAM permissions boundary policy to attach to IAM roles (optional)"
+  type        = string
+  default     = null
+}
+
+variable "quarantine_bucket" {
+  description = "Optional S3 bucket name to quarantine malicious objects. Objects are moved to: {quarantine_bucket}/{source_bucket}/{original_key}"
   type        = string
   default     = null
 }

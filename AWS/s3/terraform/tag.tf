@@ -10,8 +10,15 @@ resource "aws_lambda_function" "scanner_tag" {
   timeout          = "120"
   memory_size      = "128"
   architectures    = ["arm64"]
+
+  environment {
+    variables = {
+      QUARANTINE_BUCKET = var.quarantine_bucket != null ? var.quarantine_bucket : ""
+    }
+  }
+
   tags = {
-    Name = "${var.prefix}-tag-lambda-${random_string.random.id}" 
+    Name = "${var.prefix}-tag-lambda-${random_string.random.id}"
   }
 }
 
@@ -59,6 +66,18 @@ resource "aws_iam_policy" "tag-policy" {
       ]
     },
     {
+      "Sid": "AllowQuarantineOperations",
+      "Effect": "Allow",
+      "Action": [
+        "s3:GetObject",
+        "s3:PutObject",
+        "s3:DeleteObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::*/*"
+      ]
+    },
+    {
       "Sid": "AllowSNS",
       "Effect": "Allow",
       "Action": [
@@ -79,11 +98,11 @@ resource "aws_iam_policy" "tag-policy" {
         "arn:aws:logs:*:*:*"
       ]
     }
-  ] 
+  ]
 }
 EOF
   tags = {
-    Name = "${var.prefix}-tag-policy-${random_string.random.id}" 
+    Name = "${var.prefix}-tag-policy-${random_string.random.id}"
   }
 }
 

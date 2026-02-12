@@ -12,7 +12,6 @@ sqs = boto3.client('sqs')
 
 
 # Collect environment variables
-tags = [os.environ['sdk_tags'].replace('~', ',')]
 v1fs_region = os.environ['v1fs_region']
 
 def lambda_handler(event, context):
@@ -58,8 +57,11 @@ def lambda_handler(event, context):
         object_buffer = s3_object.get().get('Body').read()
         return object_buffer
 
-    # Scan the file using the V1FS gRPC client   
+    # Scan the file using the V1FS gRPC client
     def scan_file(key, bucket):
+        # Build tags dynamically with bucket and object info
+        tags = [f"bucket:{bucket},object:{key}"]
+
         init = amaas.grpc.init_by_region(v1fs_region, apikey, True)
         s = time.perf_counter()
         object = s3.Object(bucket, key)
